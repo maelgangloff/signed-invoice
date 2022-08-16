@@ -2,9 +2,10 @@ import { Company, Person } from './Entity'
 import { Line } from './Line'
 import jwt from 'jsonwebtoken'
 import QRCode from 'qrcode'
-import fs from 'fs'
 import { invoicePDF } from './InvoicePDF'
 import translation from './translation.json'
+import { InvoiceSignedPayload } from './InvoiceSignedPayload'
+import {createWriteStream, readFileSync} from "fs";
 
 export default class Invoice {
   public readonly subtotalWithoutTax: number = 0
@@ -28,9 +29,13 @@ export default class Invoice {
     }
   }
 
+  public static signJwt (signedPayload: InvoiceSignedPayload, privateKey: string): string {
+    return jwt.sign(signedPayload, privateKey, { algorithm: 'ES256' })
+  }
+
   public createJwt (): string {
     const { seller, client, lines, currency, reference, isPaid, date, dueDate } = this.invoice
-    return jwt.sign({
+    return Invoice.signJwt({
       iss: `${seller.name} (${seller.identifier})`,
       sub: client.name,
       iat: Math.floor(date.getTime() / 1e3),
@@ -41,16 +46,14 @@ export default class Invoice {
       lines: lines.length,
       jti: reference,
       isPaid
-    }, this.privateKey, {
-      algorithm: 'ES256'
-    })
+    }, this.privateKey)
   }
 
-  public async createQRCode (): Promise<Buffer> {
+  public async createQRCodeBuffer (): Promise<Buffer> {
     return QRCode.toBuffer(this.createJwt())
   }
 
-  public async generatePDF () {
-    invoicePDF(this, fs.createWriteStream('doc.pdf'))
+  public async generatePDF (): Promise<PDFKit.PDFDocument> {
+    return invoicePDF(this)
   }
 }

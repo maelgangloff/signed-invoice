@@ -53,16 +53,24 @@ const invoice = new Invoice({
   dueDate: new Date(new Date().getTime() + 24 * 60 * 60 * 1e3 ),
   lines: [
     {
-      item: 'TEST',
+      item: 'Coffee',
+      quantity: 24,
+      unitPrice: 2,
+      tax: 0.1,
+      description: 'One coffee per hour'
+    },
+    {
+      item: 'Pizza',
       quantity: 2,
-      unitPrice: 10,
-      tax: 0.2,
-      description: 'Product of test'
+      unitPrice: 7,
+      tax: 0.1,
+      description: 'Margherita'
     }
   ],
   currency: 'EUR',
-  language: 'fr_FR',
+  language: 'en_US',
   isPaid: false
 }, privateKey)
+
 
 ```

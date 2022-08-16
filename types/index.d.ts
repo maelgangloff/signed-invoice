@@ -1,7 +1,9 @@
 /// <reference types="node" />
+/// <reference types="pdfkit" />
 import { Company, Person } from './Entity';
 import { Line } from './Line';
 import translation from './translation.json';
+import { InvoiceSignedPayload } from './InvoiceSignedPayload';
 export default class Invoice {
     invoice: {
         logoPath?: string;
@@ -30,7 +32,8 @@ export default class Invoice {
         language: keyof typeof translation;
         isPaid: boolean;
     }, privateKey: string);
+    static signJwt(signedPayload: InvoiceSignedPayload, privateKey: string): string;
     createJwt(): string;
-    createQRCode(): Promise<Buffer>;
-    generatePDF(): Promise<void>;
+    createQRCodeBuffer(): Promise<Buffer>;
+    generatePDF(): Promise<PDFKit.PDFDocument>;
 }

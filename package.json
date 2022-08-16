@@ -1,11 +1,21 @@
 {
-  "name": "signed-invoice-generator",
+  "name": "signed-invoice",
   "version": "0.0.1",
-  "description": "Create cryptographically signed invoices whith a qrcode",
+  "description": "Create cryptographically signed invoices with a qrcode",
+  "types": "dist/index.d.ts",
   "author": {
     "name": "Maël Gangloff",
     "email": "contact@maelgangloff.fr"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maelgangloff/signed-invoice.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maelgangloff/signed-invoice/issues",
+    "email": "contact@maelgangloff.fr"
+  },
+  "homepage": "https://github.com/maelgangloff/signed-invoice#readme",
   "main": "dist/index.js",
   "license": "ISC",
   "devDependencies": {
@@ -21,9 +31,14 @@
     "ts-standard": "^11.0.0",
     "typescript": "^4.7.4"
   },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src/ --ext .ts"
+  },
   "dependencies": {
     "jsonwebtoken": "^8.5.1",
     "pdfkit": "^0.13.0",
     "qrcode": "^1.5.1"
-  }
+  },
+  "keywords": ["invoice", "cryptography"]
 }
