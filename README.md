@@ -8,8 +8,7 @@ This information is signed using the invoice issuer's private cryptographic key,
 
 ## Key signing ceremony
 
-Warning: this operation should be performed, if possible, on a newly installed computer disconnected from the internet.  
-To generate the key pair we will be using openssl.
+Warning: this operation should be performed, if possible, on a newly installed computer disconnected from the internet, with openssl installed.
 
 To generate the private key used to sign the QR code's data, execute the following command:
 ```bash
