@@ -1,0 +1,34 @@
+{
+    "en_US": {
+        "invoice": "Invoice",
+        "item": "Item",
+        "subtotalWithoutTax": "Subtotal without tax",
+        "amountDue": "Amount due",
+        "total": "Total",
+        "unitPrice": "Unit price",
+        "tax": "Tax",
+        "quantity": "Quantity",
+        "description": "Description",
+        "reference": "Reference",
+        "invoiceDate": "Invoice date",
+        "dueDate": "Due date",
+        "terms": "Terms",
+        "signedInvoice": "digital signature stamp"
+    },
+    "fr_FR": {
+        "invoice": "Facture",
+        "item": "Produit",
+        "subtotalWithoutTax": "Total HT",
+        "total": "Total",
+        "amountDue": "Total TTC",
+        "unitPrice": "Prix unitaire",
+        "tax": "TVA",
+        "quantity": "Quantité",
+        "description": "Description",
+        "reference": "Référence",
+        "invoiceDate": "Date de facturation",
+        "dueDate": "Date d'échéance",
+        "terms": "Commentaire",
+        "signedInvoice": "cachet de signature numérique"
+    }
+}

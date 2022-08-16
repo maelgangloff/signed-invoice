@@ -1,0 +1,29 @@
+{
+  "name": "signed-invoice-generator",
+  "version": "0.0.1",
+  "description": "Create cryptographically signed invoices whith a qrcode",
+  "author": {
+    "name": "Maël Gangloff",
+    "email": "contact@maelgangloff.fr"
+  },
+  "main": "dist/index.js",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/node": "^18.7.5",
+    "@types/pdfkit": "^0.12.6",
+    "@types/qrcode": "^1.4.2",
+    "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "@typescript-eslint/parser": "^5.33.1",
+    "eslint": "^8.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "standard": "^17.0.0",
+    "ts-standard": "^11.0.0",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "pdfkit": "^0.13.0",
+    "qrcode": "^1.5.1"
+  }
+}
