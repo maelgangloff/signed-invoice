@@ -3,3 +3,4 @@ node_modules/
 .github/
 tsconfig.json
 .eslintrc
+.idea/
