@@ -3,6 +3,8 @@
 This library allows you to generate invoices digitally signed by a QR Code.  
 This digital signature stamp contains the general invoice information (issuer, recipient, invoice reference, due date, invoice date, number of items, number of lines, net amount payable, payment currency and status). This information is signed using the invoice issuer's private cryptographic key. Thus, the invoice cannot be falsified by a third party.
 
+![Example invoice](docs/example.png?raw=true)
+
 ## Key signing ceremony
 
 Warning: this operation should be performed if possible on a newly installed computer disconnected from the internet.  
