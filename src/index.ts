@@ -5,7 +5,7 @@ import QRCode from 'qrcode'
 import { invoicePDF } from './InvoicePDF'
 import translation from './translation.json'
 import { InvoiceSignedPayload } from './InvoiceSignedPayload'
-import {createWriteStream, readFileSync} from "fs";
+import { createWriteStream, readFileSync } from 'fs'
 
 export default class Invoice {
   public readonly subtotalWithoutTax: number = 0
