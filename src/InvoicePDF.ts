@@ -2,142 +2,145 @@ import PDFKit from 'pdfkit'
 import { Invoice } from './index'
 import translation from './translation.json'
 
-async function generateHeader (doc: PDFKit.PDFDocument, invoice: Invoice) {
-  const lang = translation[invoice.invoice.language]
-  const { seller, logoPath } = invoice.invoice
+export class InvoicePDF {
+  private formatCurrency = (amount: number, currency: string) => `${amount.toFixed(2)} ${currency}`
+  private doc: PDFKit.PDFDocument = new PDFKit({ margin: 30, size: 'A4' })
 
-  if (logoPath) doc.image(logoPath, 0, 40, { width: 80 })
-
-  doc.fillColor('#444444')
-    .font('Helvetica')
-    .fontSize(20)
-    .text(seller.name, 90, 57)
-    .fontSize(10)
-    .text(seller.address.street, 90, 80)
-    .text(`${seller.address.zip} ${seller.address.city} ${seller.address.state ?? ''}`, 90, 95)
-    .text(`${seller.contact}`, 90, 110)
-    .image(await invoice.createQRCodeBuffer(), 450, 30, { align: 'right', width: 120 })
-    .font('Helvetica-Bold')
-    .fontSize(8)
-    .text(lang.signedInvoice, 450, 150, { align: 'center' })
-    .moveDown()
-}
-
-function generateHr (doc: PDFKit.PDFDocument, y: number) {
-  doc.strokeColor('#aaaaaa').lineWidth(1).moveTo(30, y).lineTo(550, y).stroke()
-}
-
-function formatDate (date: Date) {
-  const day = date.getDate().toString().padStart(2, '0')
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  const year = date.getFullYear()
-  return day + '/' + month + '/' + year
-}
-
-const formatCurrency = (amount: number, currency: string) => `${amount.toFixed(2)} ${currency}`
-
-function generateCustomerInformation (doc: PDFKit.PDFDocument, invoice: Invoice) {
-  const lang = translation[invoice.invoice.language]
-  const { reference, dueDate, currency, client } = invoice.invoice
-
-  doc.fillColor('#444444').fontSize(20).text(lang.invoice.toUpperCase(), 30, 160)
-  generateHr(doc, 185)
-  const customerInformationTop = 200
-  doc
-    .fontSize(10)
-    .text(`${lang.reference}:`, 30, customerInformationTop)
-    .font('Helvetica-Bold')
-    .text(reference, 130, customerInformationTop)
-    .font('Helvetica')
-    .text(`${lang.dueDate}: `, 30, customerInformationTop + 15)
-    .text(formatDate(dueDate), 130, customerInformationTop + 15)
-    .text(`${lang.amountDue}: `, 30, customerInformationTop + 30)
-    .text(formatCurrency(invoice.amountDue, currency), 130, customerInformationTop + 30)
-    .font('Helvetica-Bold')
-    .text(client.name, 280, customerInformationTop)
-    .font('Helvetica')
-    .text(client.address ? client.address.street : '', 280, customerInformationTop + 15)
-    .text(client.address ? `${client.address.zip} ${client.address.city}` : '', 280, customerInformationTop + 30)
-    .moveDown()
-
-  generateHr(doc, 252)
-}
-
-function generateTableRow (doc: PDFKit.PDFDocument, y: number, c1: string, c2: string, c3: string, c4: string|number, c5: string) {
-  doc.fontSize(10)
-    .text(c1, 30, y)
-    .text(c2, 130, y)
-    .text(c3, 280, y, { width: 90, align: 'right' })
-    .text(c4.toString(), 370, y, { width: 90, align: 'right' })
-    .text(c5, 0, y, { align: 'right' })
-}
-
-async function generateInvoiceTable (doc: PDFKit.PDFDocument, invoice: Invoice) {
-  let i
-  let invoiceTableTop = 290
-  const lang = translation[invoice.invoice.language]
-
-  doc.font('Helvetica-Bold')
-  generateTableRow(
-    doc,
-    invoiceTableTop,
-    lang.item, lang.description, lang.unitPrice, lang.quantity, lang.total)
-  generateHr(doc, invoiceTableTop + 20)
-  doc.font('Helvetica')
-
-  const items = invoice.invoice.lines
-  const { currency, terms, isPaid, date } = invoice.invoice
-  const { subtotalWithoutTax, amountDue } = invoice
-
-  let j = 0
-  let position = 0
-  let page = 1
-  for (i = 0; i < items.length; i++) {
-    const item = items[i]
-    position = invoiceTableTop + (j + 1) * 25
-    if (position > 650) {
-      invoiceTableTop = 50
-      doc.addPage()
-      generateHr(doc, 70)
-      page++
-      generateFooter(doc, invoice, page)
-      j = 0
-      position = invoiceTableTop + 25
-    }
-    generateTableRow(
-      doc,
-      position,
-      item.item,
-      item.description ?? '',
-      formatCurrency(item.unitPrice, currency),
-      item.quantity,
-      formatCurrency(item.quantity * item.unitPrice, currency)
-    )
-
-    generateHr(doc, position + 20)
-    j++
+  constructor (private invoice: Invoice) {
+    return this
   }
 
-  generateHr(doc, position + 21)
-  generateTableRow(doc, position + 35, '', '', lang.subtotalWithoutTax, '', formatCurrency(subtotalWithoutTax, currency))
-  generateTableRow(doc, position + 55, '', '', lang.tax, '', formatCurrency(amountDue - subtotalWithoutTax, currency))
-  doc.font('Helvetica-Bold')
-  generateTableRow(doc, position + 85, '', '', lang.amountDue, '', formatCurrency(amountDue, currency))
-  doc.font('Helvetica').text(`${formatDate(date)}: ${isPaid ? lang.paid : lang.waitingForPayment}`, 30, position + 55).text(terms ?? '', 30, 760)
-}
+  private async generateHeader () {
+    const lang = translation[this.invoice.invoice.language]
+    const { seller, logoPath } = this.invoice.invoice
 
-function generateFooter (doc: PDFKit.PDFDocument, invoice: Invoice, page: number) {
-  const { seller } = invoice.invoice
-  doc.font('Helvetica-Bold').fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 30, 790)
-    .text(`Page ${page}`, 520, 790).font('Helvetica')
-}
+    if (logoPath) this.doc.image(logoPath, 0, 40, { width: 80 })
 
-export async function invoicePDF (invoice: Invoice): Promise<PDFKit.PDFDocument> {
-  const doc = new PDFKit({ margin: 30, size: 'A4' })
-  await generateHeader(doc, invoice)
-  generateCustomerInformation(doc, invoice)
-  generateFooter(doc, invoice, 1)
-  await generateInvoiceTable(doc, invoice)
-  doc.end()
-  return doc
+    this.doc.fillColor('#444444')
+      .font('Helvetica')
+      .fontSize(20)
+      .text(seller.name, 90, 57)
+      .fontSize(10)
+      .text(seller.address.street, 90, 80)
+      .text(`${seller.address.zip} ${seller.address.city} ${seller.address.state ?? ''}`, 90, 95)
+      .text(`${seller.contact}`, 90, 110)
+      .image(await this.invoice.createQRCodeBuffer(), 450, 30, { align: 'right', width: 120 })
+      .font('Helvetica-Bold')
+      .fontSize(8)
+      .text(lang.signedInvoice, 450, 150, { align: 'center' })
+      .moveDown()
+  }
+
+  private generateHr (y: number) {
+    this.doc.strokeColor('#aaaaaa').lineWidth(1).moveTo(30, y).lineTo(550, y).stroke()
+  }
+
+  private formatDate (date: Date) {
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const year = date.getFullYear()
+    return day + '/' + month + '/' + year
+  }
+
+  private generateCustomerInformation () {
+    const lang = translation[this.invoice.invoice.language]
+    const { reference, dueDate, currency, client } = this.invoice.invoice
+
+    this.doc.fillColor('#444444').fontSize(20).text(lang.invoice.toUpperCase(), 30, 160)
+    this.generateHr(185)
+    const customerInformationTop = 200
+    this.doc.fontSize(10)
+      .text(`${lang.reference}:`, 30, customerInformationTop)
+      .font('Helvetica-Bold')
+      .text(reference, 130, customerInformationTop)
+      .font('Helvetica')
+      .text(`${lang.dueDate}: `, 30, customerInformationTop + 15)
+      .text(this.formatDate(dueDate), 130, customerInformationTop + 15)
+      .text(`${lang.amountDue}: `, 30, customerInformationTop + 30)
+      .text(this.formatCurrency(this.invoice.amountDue, currency), 130, customerInformationTop + 30)
+      .font('Helvetica-Bold')
+      .text(client.name, 280, customerInformationTop)
+      .font('Helvetica')
+      .text(client.address ? client.address.street : '', 280, customerInformationTop + 15)
+      .text(client.address ? `${client.address.zip} ${client.address.city}` : '', 280, customerInformationTop + 30)
+      .moveDown()
+
+    this.generateHr(252)
+  }
+
+  private generateTableRow (y: number, c1: string, c2: string, c3: string, c4: string|number, c5: string) {
+    this.doc.fontSize(10)
+      .text(c1, 30, y)
+      .text(c2, 130, y)
+      .text(c3, 280, y, { width: 90, align: 'right' })
+      .text(c4.toString(), 370, y, { width: 90, align: 'right' })
+      .text(c5, 0, y, { align: 'right' })
+  }
+
+  private async generateInvoiceTable () {
+    let i
+    let invoiceTableTop = 290
+    const lang = translation[this.invoice.invoice.language]
+
+    this.doc.font('Helvetica-Bold')
+    this.generateTableRow(
+      invoiceTableTop,
+      lang.item, lang.description, lang.unitPrice, lang.quantity, lang.total)
+    this.generateHr(invoiceTableTop + 20)
+    this.doc.font('Helvetica')
+
+    const items = this.invoice.invoice.lines
+    const { currency, terms, isPaid, date } = this.invoice.invoice
+    const { subtotalWithoutTax, amountDue } = this.invoice
+
+    let j = 0
+    let position = 0
+    let page = 1
+    for (i = 0; i < items.length; i++) {
+      const item = items[i]
+      position = invoiceTableTop + (j + 1) * 25
+      if (position > 650) {
+        invoiceTableTop = 50
+        this.doc.addPage()
+        this.generateHr(70)
+        page++
+        this.generateFooter(page)
+        j = 0
+        position = invoiceTableTop + 25
+      }
+      this.generateTableRow(
+        position,
+        item.item,
+        item.description ?? '',
+        this.formatCurrency(item.unitPrice, currency),
+        item.quantity,
+        this.formatCurrency(item.quantity * item.unitPrice, currency)
+      )
+
+      this.generateHr(position + 20)
+      j++
+    }
+
+    this.generateHr(position + 21)
+    this.generateTableRow(position + 35, '', '', lang.subtotalWithoutTax, '', this.formatCurrency(subtotalWithoutTax, currency))
+    this.generateTableRow(position + 55, '', '', lang.tax, '', this.formatCurrency(amountDue - subtotalWithoutTax, currency))
+    this.doc.font('Helvetica-Bold')
+    this.generateTableRow(position + 85, '', '', lang.amountDue, '', this.formatCurrency(amountDue, currency))
+    this.doc.font('Helvetica').text(`${this.formatDate(date)}: ${isPaid ? lang.paid : lang.waitingForPayment}`, 30, position + 55).text(terms ?? '', 30, 760)
+  }
+
+  private generateFooter (page = 1) {
+    const { seller } = this.invoice.invoice
+    this.doc.font('Helvetica-Bold').fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 30, 790)
+      .text(`Page ${page}`, 520, 790).font('Helvetica')
+  }
+
+  public async generate () {
+    await this.generateHeader()
+    this.generateCustomerInformation()
+    this.generateFooter()
+    await this.generateInvoiceTable()
+    this.doc.end()
+    return this.doc
+  }
 }

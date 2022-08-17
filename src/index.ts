@@ -2,7 +2,7 @@ import { Company, Person } from './Entity'
 import { Line } from './Line'
 import jwt, { Secret } from 'jsonwebtoken'
 import QRCode from 'qrcode'
-import { invoicePDF } from './InvoicePDF'
+import { InvoicePDF } from './InvoicePDF'
 import translation from './translation.json'
 import { InvoiceSignedPayload } from './InvoiceSignedPayload'
 
@@ -82,6 +82,6 @@ export class Invoice {
    * @return {Promise<PDFKit.PDFDocument>}
    */
   public async generatePDF (): Promise<PDFKit.PDFDocument> {
-    return invoicePDF(this)
+    return new InvoicePDF(this).generate()
   }
 }
