@@ -107,7 +107,7 @@ async function generateInvoiceTable (doc: PDFKit.PDFDocument, invoice: Invoice) 
     generateTableRow(
       doc,
       position,
-      j.toString() + '-' + position.toString(),
+      item.item,
       item.description ?? '',
       formatCurrency(item.unitPrice, currency),
       item.quantity,
