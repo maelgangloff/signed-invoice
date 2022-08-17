@@ -27,6 +27,7 @@ Keep these keys on a safe backup medium.
 Save your private key in an environment variable and share the public key to the people who will need to authenticate your generated documents.
 ```js
 const { Invoice } = require('signed-invoice')
+const fs = require('fs')
 const dotenv = require('dotenv')
 
 dotenv()
@@ -70,4 +71,7 @@ const invoice = new Invoice({
   language: 'en_US',
   isPaid: false
 }, privateKey)
+
+invoice.generatePDF().then(doc => doc.pipe(fs.createWriteStream('invoice.pdf')))
+
 ```
