@@ -6,7 +6,7 @@ import { invoicePDF } from './InvoicePDF'
 import translation from './translation.json'
 import { InvoiceSignedPayload } from './InvoiceSignedPayload'
 
-export default class Invoice {
+export class Invoice {
   public readonly subtotalWithoutTax: number = 0
   public readonly amountDue: number = 0
 

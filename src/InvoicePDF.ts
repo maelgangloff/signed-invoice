@@ -1,5 +1,5 @@
 import PDFKit from 'pdfkit'
-import Invoice from './index'
+import { Invoice } from './index'
 import translation from './translation.json'
 
 async function generateHeader (doc: PDFKit.PDFDocument, invoice: Invoice) {
