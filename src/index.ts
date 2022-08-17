@@ -63,7 +63,7 @@ export class Invoice {
       amount: this.amountDue,
       currency,
       quantity: lines.reduce((q, l) => q + l.quantity, 0),
-      lines: lines.length,
+      line: lines.length,
       jti: reference,
       isPaid
     }, this.privateKey)

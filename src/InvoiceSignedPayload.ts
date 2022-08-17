@@ -6,7 +6,7 @@ export interface InvoiceSignedPayload {
     amount: number
     currency: string
     quantity: number
-    lines: number
+    line: number
     jti: string
     isPaid: boolean
 }
