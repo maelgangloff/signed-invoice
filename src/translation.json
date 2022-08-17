@@ -13,7 +13,9 @@
         "invoiceDate": "Invoice date",
         "dueDate": "Due date",
         "terms": "Terms",
-        "signedInvoice": "digital signature stamp"
+        "signedInvoice": "digital signature stamp",
+        "waitingForPayment": "Waiting for payment.",
+        "paid": "The bill is paid."
     },
     "fr_FR": {
         "invoice": "Facture",
@@ -29,6 +31,8 @@
         "invoiceDate": "Date de facturation",
         "dueDate": "Date d'échéance",
         "terms": "Commentaire",
-        "signedInvoice": "cachet de signature numérique"
+        "signedInvoice": "cachet de signature numérique",
+        "waitingForPayment": "En attente de paiement.",
+        "paid": "La facture est payée."
     }
 }

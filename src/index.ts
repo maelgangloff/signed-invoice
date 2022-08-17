@@ -20,7 +20,8 @@ export class Invoice {
         lines: Line[]
         currency: string
         language: keyof typeof translation
-        isPaid: boolean
+        isPaid: boolean,
+        terms?: string
     }, private privateKey: string) {
     for (const line of this.invoice.lines) {
       this.subtotalWithoutTax += line.quantity * line.unitPrice

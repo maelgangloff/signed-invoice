@@ -9,16 +9,17 @@ async function generateHeader (doc: PDFKit.PDFDocument, invoice: Invoice) {
   if (logoPath) doc.image(logoPath, 0, 40, { width: 80 })
 
   doc.fillColor('#444444')
+    .font('Helvetica')
     .fontSize(20)
     .text(seller.name, 90, 57)
     .fontSize(10)
     .text(seller.address.street, 90, 80)
     .text(`${seller.address.zip} ${seller.address.city} ${seller.address.state ?? ''}`, 90, 95)
     .text(`${seller.contact}`, 90, 110)
-    .image(await invoice.createQRCodeBuffer(), 470, 30, { align: 'right', width: 100 })
+    .image(await invoice.createQRCodeBuffer(), 450, 30, { align: 'right', width: 120 })
     .font('Helvetica-Bold')
     .fontSize(8)
-    .text(lang.signedInvoice, 470, 130, { align: 'center' })
+    .text(lang.signedInvoice, 450, 150, { align: 'center' })
     .moveDown()
 }
 
@@ -71,9 +72,9 @@ function generateTableRow (doc: PDFKit.PDFDocument, y: number, c1: string, c2: s
     .text(c5, 0, y, { align: 'right' })
 }
 
-function generateInvoiceTable (doc: PDFKit.PDFDocument, invoice: Invoice) {
+async function generateInvoiceTable (doc: PDFKit.PDFDocument, invoice: Invoice) {
   let i
-  const invoiceTableTop = 330
+  let invoiceTableTop = 290
   const lang = translation[invoice.invoice.language]
 
   doc.font('Helvetica-Bold')
@@ -85,16 +86,28 @@ function generateInvoiceTable (doc: PDFKit.PDFDocument, invoice: Invoice) {
   doc.font('Helvetica')
 
   const items = invoice.invoice.lines
-  const { currency } = invoice.invoice
+  const { currency, terms, isPaid, date } = invoice.invoice
   const { subtotalWithoutTax, amountDue } = invoice
 
+  let j = 0
+  let position = 0
+  let page = 1
   for (i = 0; i < items.length; i++) {
     const item = items[i]
-    const position = invoiceTableTop + (i + 1) * 25
+    position = invoiceTableTop + (j + 1) * 25
+    if (position > 650) {
+      invoiceTableTop = 50
+      doc.addPage()
+      generateHr(doc, 70)
+      page++
+      generateFooter(doc, invoice, page)
+      j = 0
+      position = invoiceTableTop + 25
+    }
     generateTableRow(
       doc,
       position,
-      item.item,
+      j.toString() + '-' + position.toString(),
       item.description ?? '',
       formatCurrency(item.unitPrice, currency),
       item.quantity,
@@ -102,24 +115,29 @@ function generateInvoiceTable (doc: PDFKit.PDFDocument, invoice: Invoice) {
     )
 
     generateHr(doc, position + 20)
+    j++
   }
 
-  generateTableRow(doc, invoiceTableTop + (i + 1) * 30 + 10, '', '', lang.subtotalWithoutTax, '', formatCurrency(subtotalWithoutTax, currency))
-  generateTableRow(doc, invoiceTableTop + (i + 2) * 30, '', '', lang.tax, '', formatCurrency(amountDue - subtotalWithoutTax, currency))
-  generateTableRow(doc, invoiceTableTop + (i + 3) * 30, '', '', lang.amountDue, '', formatCurrency(amountDue, currency))
+  generateHr(doc, position + 21)
+  generateTableRow(doc, position + 35, '', '', lang.subtotalWithoutTax, '', formatCurrency(subtotalWithoutTax, currency))
+  generateTableRow(doc, position + 55, '', '', lang.tax, '', formatCurrency(amountDue - subtotalWithoutTax, currency))
+  doc.font('Helvetica-Bold')
+  generateTableRow(doc, position + 85, '', '', lang.amountDue, '', formatCurrency(amountDue, currency))
+  doc.font('Helvetica').text(`${formatDate(date)}: ${isPaid ? lang.paid : lang.waitingForPayment}`, 30, position + 55).text(terms ?? '', 30, 760)
 }
 
-function generateFooter (doc: PDFKit.PDFDocument, invoice: Invoice) {
+function generateFooter (doc: PDFKit.PDFDocument, invoice: Invoice, page: number) {
   const { seller } = invoice.invoice
-  doc.fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 50, 800, { align: 'left', width: 500 })
+  doc.font('Helvetica-Bold').fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 30, 790)
+    .text(`Page ${page}`, 520, 790).font('Helvetica')
 }
 
 export async function invoicePDF (invoice: Invoice): Promise<PDFKit.PDFDocument> {
   const doc = new PDFKit({ margin: 30, size: 'A4' })
   await generateHeader(doc, invoice)
   generateCustomerInformation(doc, invoice)
-  generateInvoiceTable(doc, invoice)
-  generateFooter(doc, invoice)
+  generateFooter(doc, invoice, 1)
+  await generateInvoiceTable(doc, invoice)
   doc.end()
   return doc
 }
