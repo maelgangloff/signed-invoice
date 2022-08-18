@@ -4,7 +4,7 @@ import { Invoice } from './index'
 import translation from './translation.json'
 
 export class InvoicePDF {
-  private formatCurrency = (amount: number, currency: string) => `${amount.toFixed(2)} ${currency}`
+  private formatCurrency = (amount: number, currency: string) => `${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`
   private doc: PDFKit.PDFDocument = new PDFKit({ margin: 30, size: 'A4' })
 
   constructor (private invoice: Invoice) {
@@ -15,16 +15,17 @@ export class InvoicePDF {
     const lang = translation[this.invoice.invoice.language]
     const { seller, logoPath } = this.invoice.invoice
 
-    if (logoPath) this.doc.image(logoPath, 0, 40, { width: 80 })
+    if (logoPath) this.doc.image(logoPath, 10, 40, { width: 80 })
 
+    const x = logoPath ? 100 : 30
     this.doc.fillColor('#444444')
       .font('Helvetica')
       .fontSize(20)
-      .text(seller.name, 90, 57)
+      .text(seller.name, x, 57)
       .fontSize(10)
-      .text(seller.address.street, 90, 80)
-      .text(`${seller.address.zip} ${seller.address.city} ${seller.address.state ?? ''}`, 90, 95)
-      .text(`${seller.contact}`, 90, 110)
+      .text(seller.address.street, x, 80)
+      .text(`${seller.address.zip} ${seller.address.city} ${seller.address.state ?? ''}`, x, 95)
+      .text(`${seller.contact}`, x, 110)
       .image(await this.invoice.createQRCodeBuffer(), 450, 30, { align: 'right', width: 120 })
       .font('Helvetica-Bold')
       .fontSize(8)
@@ -107,8 +108,8 @@ export class InvoicePDF {
         this.generateFooter(page)
         position = invoiceTableTop + 25
       }
-      const itemName = wrap(item.item, { width: 11, indent: '', trim: true })
-      const itemDescription = wrap(item.description ?? '', { width: 22, indent: '', trim: true })
+      const itemName = wrap(item.item, { width: 18, indent: '', trim: true })
+      const itemDescription = wrap(item.description ?? '', { width: 40, indent: '', trim: true })
 
       this.generateTableRow(
         position,

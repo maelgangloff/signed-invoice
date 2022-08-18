@@ -60,12 +60,12 @@ export class Invoice {
       sub: client.name,
       iat: Math.floor(date.getTime() / 1e3),
       dueDate: Math.floor(dueDate.getTime() / 1e3),
-      amount: this.amountDue,
-      currency,
-      quantity: lines.reduce((q, l) => q + l.quantity, 0),
+      amt: this.amountDue,
+      curr: currency,
+      qty: lines.reduce((q, l) => q + l.quantity, 0),
       line: lines.length,
-      jti: reference,
-      isPaid
+      ref: reference,
+      paid: isPaid
     }, this.privateKey)
   }
 
@@ -74,7 +74,7 @@ export class Invoice {
    * @return {Promise<Buffer>}
    */
   public async createQRCodeBuffer (): Promise<Buffer> {
-    return QRCode.toBuffer(this.createJwt())
+    return QRCode.toBuffer(this.createJwt(), { errorCorrectionLevel: 'L' })
   }
 
   /**
