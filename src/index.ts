@@ -5,24 +5,23 @@ import QRCode from 'qrcode'
 import { InvoicePDF } from './InvoicePDF'
 import translation from './translation.json'
 import { InvoiceSignedPayload } from './InvoiceSignedPayload'
-
 export class Invoice {
   public readonly subtotalWithoutTax: number = 0
   public readonly amountDue: number = 0
 
   public constructor (public invoice: {
-        logoPath?: string,
-        seller: Company
-        client: Company | Person
-        date: Date
-        reference: string
-        dueDate: Date
-        lines: Line[]
-        currency: string
-        language: keyof typeof translation
-        isPaid: boolean,
-        terms?: string
-    }, private privateKey: string) {
+    logoPath?: string,
+    seller: Company
+    client: Company | Person
+    date: Date
+    reference: string
+    dueDate: Date
+    lines: Line[]
+    currency: string
+    language: keyof typeof translation
+    isPaid: boolean,
+    terms?: string
+  }, private privateKey: string) {
     for (const line of this.invoice.lines) {
       this.subtotalWithoutTax += line.quantity * line.unitPrice
       this.amountDue += line.quantity * line.unitPrice * (1 + line.tax)

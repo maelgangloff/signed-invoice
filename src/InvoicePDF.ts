@@ -5,7 +5,12 @@ import translation from './translation.json'
 
 export class InvoicePDF {
   private formatCurrency = (amount: number, currency: string) => `${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`
-  private doc: PDFKit.PDFDocument = new PDFKit({ margin: 30, size: 'A4' })
+  private doc: PDFKit.PDFDocument = new PDFKit({
+    margins: {
+      top: 30, left: 30, right: 30, bottom: 10
+    },
+    size: 'A4'
+  })
 
   constructor (private invoice: Invoice) {
     return this
@@ -81,7 +86,7 @@ export class InvoicePDF {
 
   private async generateInvoiceTable () {
     let i
-    let invoiceTableTop = 290
+    let invoiceTableTop = 270
     const lang = translation[this.invoice.invoice.language]
 
     this.doc.font('Helvetica-Bold')
@@ -100,7 +105,16 @@ export class InvoicePDF {
     for (i = 0; i < items.length; i++) {
       const item = items[i]
       position += 25
-      if (position > 650) {
+
+      const itemName = wrap(item.item, { width: 18, indent: '', trim: true })
+      const itemDescription = wrap(item.description ?? '', { width: 40, indent: '', trim: true })
+
+      const d1 = (itemName.match(/\n/g) || []).length
+      const d2 = (itemDescription.match(/\n/g) || []).length
+
+      const positionEnd = position + (d1 >= d2 ? d1 * 10 : d2 * 10) + 22
+
+      if (positionEnd >= 750) {
         invoiceTableTop = 50
         this.doc.addPage()
         this.generateHr(70)
@@ -108,8 +122,6 @@ export class InvoicePDF {
         this.generateFooter(page)
         position = invoiceTableTop + 25
       }
-      const itemName = wrap(item.item, { width: 18, indent: '', trim: true })
-      const itemDescription = wrap(item.description ?? '', { width: 40, indent: '', trim: true })
 
       this.generateTableRow(
         position,
@@ -120,10 +132,15 @@ export class InvoicePDF {
         this.formatCurrency(item.quantity * item.unitPrice, currency)
       )
 
-      const d1 = (itemName.match(/\n/g) || []).length
-      const d2 = (itemDescription.match(/\n/g) || []).length
       position += d1 >= d2 ? d1 * 10 : d2 * 10
       this.generateHr(position + 22)
+    }
+    if (position >= 650) {
+      invoiceTableTop = 50
+      this.doc.addPage()
+      page++
+      this.generateFooter(page)
+      position = invoiceTableTop
     }
 
     this.generateHr(position + 21)
@@ -131,13 +148,13 @@ export class InvoicePDF {
     this.generateTableRow(position + 55, '', '', lang.tax, '', this.formatCurrency(amountDue - subtotalWithoutTax, currency))
     this.doc.font('Helvetica-Bold')
     this.generateTableRow(position + 85, '', '', lang.amountDue, '', this.formatCurrency(amountDue, currency))
-    this.doc.font('Helvetica').text(`${this.formatDate(date)}: ${isPaid ? lang.paid : lang.waitingForPayment}`, 30, position + 55).text(terms ?? '', 30, 760)
+    this.doc.font('Helvetica').text(`${this.formatDate(date)}: ${isPaid ? lang.paid : lang.waitingForPayment}`, 30, position + 35).text(terms ?? '', 30, 750)
   }
 
   private generateFooter (page = 1) {
     const { seller } = this.invoice.invoice
-    this.doc.font('Helvetica-Bold').fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 30, 790)
-      .text(`Page ${page}`, 520, 790).font('Helvetica')
+    this.doc.font('Helvetica-Bold').fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 30, 810)
+      .text(`Page ${page}`, 520, 810).font('Helvetica')
   }
 
   public async generate () {

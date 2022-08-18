@@ -35,22 +35,17 @@ dotenv()
 const privateKey = process.env.PRIVATE_KEY
 
 const invoice = new Invoice({
+  logoPath: 'logo.png',
   seller: {
-    name: 'Maël Gangloff',
-    identifier: 'SIRET 000 000 000 00000',
+    name: "My company",
+    identifier: 'SIREN 000 000 000',
     contact: 'contact@maelgangloff.fr',
-    address: {
-      street: '4 RUE DES FLEURS',
-      city: 'PARIS',
-      zip: '75000'
-    }
+    address: {street: '4 RUE DES FLEURS', city: 'PARIS', zip: '75000'}
   },
-  client: {
-    name: 'John Doe'
-  },
+  client: {name: 'John Doe'},
   reference: 'MG202200000',
   date: new Date(),
-  dueDate: new Date(new Date().getTime() + 24 * 60 * 60 * 1e3 ),
+  dueDate: new Date('2022-08-20'),
   lines: [
     {
       item: 'Coffee',
@@ -65,11 +60,43 @@ const invoice = new Invoice({
       unitPrice: 7,
       tax: 0.1,
       description: 'Margherita'
+    }, {
+      item: 'Soda',
+      quantity: 3,
+      unitPrice: 2,
+      tax: 0.1
+    },
+    {
+      item: 'Hot-dog',
+      quantity: 1,
+      unitPrice: 5,
+      tax: 0.1
+    },
+    {
+      item: 'Salad',
+      quantity: 1,
+      unitPrice: 8,
+      tax: 0.1,
+      description: 'Caesar'
+    },{
+      item: 'Pasta',
+      quantity: 4,
+      unitPrice: 6,
+      tax: 0.1,
+      description: 'A plate of bolognese pasta'
+    },
+    {
+      item: 'Quiche Lorraine',
+      quantity: 6,
+      unitPrice: 10,
+      tax: 0.1,
+      description: 'Cream, eggs, and bacon'
     }
   ],
+  terms: 'We hope you had a good time and would be happy to welcome you again',
   currency: 'EUR',
   language: 'en_US',
-  isPaid: false
+  isPaid: true
 }, privateKey)
 
 invoice.generatePDF().then(doc => doc.pipe(fs.createWriteStream('invoice.pdf')))
