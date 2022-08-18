@@ -38,7 +38,11 @@
   "dependencies": {
     "jsonwebtoken": "^8.5.1",
     "pdfkit": "^0.13.0",
-    "qrcode": "^1.5.1"
+    "qrcode": "^1.5.1",
+    "word-wrap": "^1.2.3"
   },
-  "keywords": ["invoice", "cryptography"]
+  "keywords": [
+    "invoice",
+    "cryptography"
+  ]
 }

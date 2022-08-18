@@ -1,4 +1,5 @@
 import PDFKit from 'pdfkit'
+import wrap from 'word-wrap'
 import { Invoice } from './index'
 import translation from './translation.json'
 
@@ -93,32 +94,35 @@ export class InvoicePDF {
     const { currency, terms, isPaid, date } = this.invoice.invoice
     const { subtotalWithoutTax, amountDue } = this.invoice
 
-    let j = 0
-    let position = 0
+    let position = invoiceTableTop
     let page = 1
     for (i = 0; i < items.length; i++) {
       const item = items[i]
-      position = invoiceTableTop + (j + 1) * 25
+      position += 25
       if (position > 650) {
         invoiceTableTop = 50
         this.doc.addPage()
         this.generateHr(70)
         page++
         this.generateFooter(page)
-        j = 0
         position = invoiceTableTop + 25
       }
+      const itemName = wrap(item.item, { width: 11, indent: '', trim: true })
+      const itemDescription = wrap(item.description ?? '', { width: 22, indent: '', trim: true })
+
       this.generateTableRow(
         position,
-        item.item,
-        item.description ?? '',
+        itemName,
+        itemDescription,
         this.formatCurrency(item.unitPrice, currency),
         item.quantity,
         this.formatCurrency(item.quantity * item.unitPrice, currency)
       )
 
-      this.generateHr(position + 20)
-      j++
+      const d1 = (itemName.match(/\n/g) || []).length
+      const d2 = (itemDescription.match(/\n/g) || []).length
+      position += d1 >= d2 ? d1 * 10 : d2 * 10
+      this.generateHr(position + 22)
     }
 
     this.generateHr(position + 21)
