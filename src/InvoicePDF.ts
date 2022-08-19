@@ -152,9 +152,10 @@ export class InvoicePDF {
   }
 
   private generateFooter (page = 1) {
+    const lang = translation[this.invoice.invoice.language]
     const { seller } = this.invoice.invoice
     this.doc.font('Helvetica-Bold').fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 30, 810)
-      .text(`Page ${page}`, 520, 810).font('Helvetica')
+      .text(`${lang.page} ${page}`, 520, 810).font('Helvetica')
   }
 
   public async generate () {

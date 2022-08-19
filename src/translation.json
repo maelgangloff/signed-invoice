@@ -15,7 +15,8 @@
         "terms": "Terms",
         "signedInvoice": "digital signature stamp",
         "waitingForPayment": "Waiting for payment.",
-        "paid": "The bill is paid."
+        "paid": "The bill is paid.",
+        "page": "Page"
     },
     "fr_FR": {
         "invoice": "Facture",
@@ -33,6 +34,26 @@
         "terms": "Commentaire",
         "signedInvoice": "cachet de signature numérique",
         "waitingForPayment": "En attente de paiement.",
-        "paid": "La facture est payée."
+        "paid": "La facture est payée.",
+        "page": "Page"
+    },
+    "de_DE": {
+        "invoice": "Rechnung",
+        "item": "Artikel",
+        "subtotalWithoutTax": "Nettobetrag",
+        "total": "Betrag",
+        "amountDue": "Gesamtbetrag",
+        "unitPrice": "Einzelpreis",
+        "tax": "Gesamtsteuer",
+        "quantity": "Menge",
+        "description": "Beschreibung",
+        "reference": "Rechnungsnummer",
+        "invoiceDate": "Rechnungsdatum",
+        "dueDate": "Fälligkeitsdatum",
+        "terms": "Zahlungsbedingungen",
+        "signedInvoice": "digitaler Signaturstempel",
+        "waitingForPayment": "Warten auf Zahlung.",
+        "paid": "Die Rechnung ist bezahlt.",
+        "page": "Seite"
     }
 }
