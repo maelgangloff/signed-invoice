@@ -97,9 +97,11 @@ const invoice = new Invoice({
   currency: 'EUR',
   language: 'en_US',
   isPaid: true,
-  method: 'CARD'
+  paymentMethod: 'CARD'
 }, privateKey)
 
 invoice.generatePDF().then(doc => doc.pipe(fs.createWriteStream('invoice.pdf')))
 
 ```
+The invoice can be generated in different languages. You are free to contribute to the project by adding the translations to the [translation.json](src/translation.json) file and submitting them via a pull request.
+
