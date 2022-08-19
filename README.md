@@ -1,10 +1,28 @@
 # Digitally signed invoice generator
 
+## What is it and how does it work?
+
 This library allows you to generate invoices digitally signed by a QR Code.  
 This digital signature stamp contains general invoice information (issuer, recipient, invoice reference, due date, invoice date, number of items, number of lines, net amount payable, payment currency and status).  
-This information is signed using the invoice issuer's private cryptographic key, thus the invoice cannot be falsified by a third party.
+The QR Code contains a JWT token automatically generated from the data provided. The information is signed using the private cryptographic key of the issuer of the invoice, so the invoice cannot be falsified by a third party.  
 
 ![Example invoice](docs/example.png?raw=true)
+
+Here is an example of the content of the JWT token payload:
+```json
+{
+  "iss": "My company (SIREN 000 000 000)",
+  "sub": "John Doe",
+  "iat": 1660947313,
+  "dueDate": 1661033713,
+  "amt": 181.5,
+  "curr": "EUR",
+  "qty": 41,
+  "line": 7,
+  "ref": "MG202200000",
+  "pay": "CASH"
+}
+```
 
 ## Key signing ceremony
 
@@ -32,7 +50,7 @@ const dotenv = require('dotenv')
 
 dotenv()
 
-const privateKey = process.env.PRIVATE_KEY
+const privateKey = process.env.PRIVATE_KEY ?? ''
 
 const invoice = new Invoice({
   logoPath: 'logo.png',
@@ -96,11 +114,10 @@ const invoice = new Invoice({
   terms: 'We hope you had a good time and would be happy to welcome you again',
   currency: 'EUR',
   language: 'en_US',
-  payment: true // 'CASH' | 'CARD' | 'BANK' | 'CHQ' | 'CRYPTO' | string | boolean
+  payment: 'CASH' // 'CASH' | 'CARD' | 'BANK' | 'CHQ' | 'CRYPTO' | string | boolean
 }, privateKey)
 
 invoice.generatePDF().then(doc => doc.pipe(fs.createWriteStream('invoice.pdf')))
 
 ```
 The invoice can be generated in different languages. You are free to contribute to the project by adding the translations to the [translation.json](src/translation.json) file and submitting them via a pull request.
-
