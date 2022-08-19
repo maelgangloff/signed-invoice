@@ -97,7 +97,7 @@ export class InvoicePDF {
     this.doc.font('Helvetica')
 
     const items = this.invoice.invoice.lines
-    const { currency, terms, isPaid, date } = this.invoice.invoice
+    const { currency, terms, payment, date } = this.invoice.invoice
     const { subtotalWithoutTax, amountDue } = this.invoice
 
     let position = invoiceTableTop
@@ -148,7 +148,7 @@ export class InvoicePDF {
     this.generateTableRow(position + 55, '', '', lang.tax, '', this.formatCurrency(amountDue - subtotalWithoutTax, currency))
     this.doc.font('Helvetica-Bold')
     this.generateTableRow(position + 85, '', '', lang.amountDue, '', this.formatCurrency(amountDue, currency))
-    this.doc.font('Helvetica').text(`${this.formatDate(date)}: ${isPaid ? lang.paid : lang.waitingForPayment}`, 30, position + 35).text(terms ?? '', 30, 750)
+    this.doc.font('Helvetica').text(`${this.formatDate(date)}: ${payment === false ? lang.waitingForPayment : lang.paid}`, 30, position + 35).text(terms ?? '', 30, 750)
   }
 
   private generateFooter (page = 1) {

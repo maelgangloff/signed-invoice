@@ -1,6 +1,6 @@
 {
   "name": "signed-invoice",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Create cryptographically signed invoices with a qrcode",
   "types": "types/index.d.ts",
   "author": {

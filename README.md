@@ -96,8 +96,7 @@ const invoice = new Invoice({
   terms: 'We hope you had a good time and would be happy to welcome you again',
   currency: 'EUR',
   language: 'en_US',
-  isPaid: true,
-  paymentMethod: 'CARD'
+  payment: true // 'CASH' | 'CARD' | 'BANK' | 'CHQ' | 'CRYPTO' | string | boolean
 }, privateKey)
 
 invoice.generatePDF().then(doc => doc.pipe(fs.createWriteStream('invoice.pdf')))

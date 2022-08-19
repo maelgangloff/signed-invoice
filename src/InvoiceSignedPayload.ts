@@ -19,8 +19,6 @@ export interface InvoiceSignedPayload {
     line: number
     /** Issuer invoice reference */
     ref: string
-    /** If true, the invoice is declared paid by the issuer */
-    paid: boolean
-    /** Method of payment to pay the invoice */
-    method?: string
+    /** Method of payment to pay the invoice. If `false`, the invoice is declared unpaid by the issuer */
+    pay: PaymentMethod | boolean
 }

@@ -44,7 +44,7 @@ export class Invoice {
    * @return {string} The signed JWT token
    */
   public createJwt (): string {
-    const { seller, client, lines, currency, reference, isPaid, date, dueDate, paymentMethod } = this.invoice
+    const { seller, client, lines, currency, reference, date, dueDate, payment } = this.invoice
     return Invoice.signJwt({
       iss: `${seller.name} (${seller.identifier})`,
       sub: client.name,
@@ -55,8 +55,7 @@ export class Invoice {
       qty: lines.reduce((q, l) => q + l.quantity, 0),
       line: lines.length,
       ref: reference,
-      paid: isPaid,
-      method: paymentMethod
+      pay: payment
     }, this.privateKey)
   }
 

@@ -13,7 +13,6 @@ export interface InvoiceInterface {
     lines: Line[]
     currency: string
     language: keyof typeof translation
-    isPaid: boolean,
-    paymentMethod?: PaymentMethod,
+    payment: PaymentMethod | boolean,
     terms?: string
   }
