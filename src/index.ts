@@ -1,27 +1,18 @@
-import { Company, Person } from './Entity'
-import { Line } from './Line'
 import jwt, { Secret } from 'jsonwebtoken'
 import QRCode from 'qrcode'
 import { InvoicePDF } from './InvoicePDF'
-import translation from './translation.json'
 import { InvoiceSignedPayload } from './InvoiceSignedPayload'
+import { InvoiceInterface } from './InvoiceInterface'
+
 export class Invoice {
   public readonly subtotalWithoutTax: number = 0
   public readonly amountDue: number = 0
 
-  public constructor (public invoice: {
-    logoPath?: string,
-    seller: Company
-    client: Company | Person
-    date: Date
-    reference: string
-    dueDate: Date
-    lines: Line[]
-    currency: string
-    language: keyof typeof translation
-    isPaid: boolean,
-    terms?: string
-  }, private privateKey: string) {
+  /**
+   * @param {InvoiceInterface} invoice Invoice information
+   * @param {Secret} privateKey prime256v1 private key
+   */
+  public constructor (public invoice: InvoiceInterface, private privateKey: string) {
     for (const line of this.invoice.lines) {
       this.subtotalWithoutTax += line.quantity * line.unitPrice
       this.amountDue += line.quantity * line.unitPrice * (1 + line.tax)
@@ -53,7 +44,7 @@ export class Invoice {
    * @return {string} The signed JWT token
    */
   public createJwt (): string {
-    const { seller, client, lines, currency, reference, isPaid, date, dueDate } = this.invoice
+    const { seller, client, lines, currency, reference, isPaid, date, dueDate, paymentMethod } = this.invoice
     return Invoice.signJwt({
       iss: `${seller.name} (${seller.identifier})`,
       sub: client.name,
@@ -64,7 +55,8 @@ export class Invoice {
       qty: lines.reduce((q, l) => q + l.quantity, 0),
       line: lines.length,
       ref: reference,
-      paid: isPaid
+      paid: isPaid,
+      method: paymentMethod
     }, this.privateKey)
   }
 

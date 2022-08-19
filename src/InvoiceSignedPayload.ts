@@ -1,3 +1,5 @@
+export type PaymentMethod = 'CASH' | 'CARD' | 'BANK' | 'CHQ' | 'CRYPTO' | string
+
 export interface InvoiceSignedPayload {
     /** Invoice issuer */
     iss: string
@@ -19,4 +21,6 @@ export interface InvoiceSignedPayload {
     ref: string
     /** If true, the invoice is declared paid by the issuer */
     paid: boolean
+    /** Method of payment to pay the invoice */
+    method?: string
 }

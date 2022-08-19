@@ -45,7 +45,7 @@ const invoice = new Invoice({
   client: {name: 'John Doe'},
   reference: 'MG202200000',
   date: new Date(),
-  dueDate: new Date('2022-08-20'),
+  dueDate: new Date(new Date().getTime() + 24 * 60 * 60 * 1e3),
   lines: [
     {
       item: 'Coffee',
@@ -96,7 +96,8 @@ const invoice = new Invoice({
   terms: 'We hope you had a good time and would be happy to welcome you again',
   currency: 'EUR',
   language: 'en_US',
-  isPaid: true
+  isPaid: true,
+  method: 'CARD'
 }, privateKey)
 
 invoice.generatePDF().then(doc => doc.pipe(fs.createWriteStream('invoice.pdf')))
