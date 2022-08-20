@@ -4,7 +4,7 @@ import { Invoice } from './index'
 import translation from './translation.json'
 
 export class InvoicePDF {
-  private static readonly formatCurrency = (amount: number, currency: string) => `${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`
+  private static readonly formatCurrency = (amount: number, currency: string) => `${currency} ${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}`
   private readonly formatDate = (date: Date) => date.toLocaleDateString(this.invoice.invoice.language)
   private readonly generateHr = (y: number) => this.doc.strokeColor('#aaaaaa').lineWidth(1).moveTo(30, y).lineTo(550, y).stroke()
 
