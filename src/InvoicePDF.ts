@@ -4,9 +4,9 @@ import { Invoice } from './index'
 import translation from './translation.json'
 
 export class InvoicePDF {
-  private static formatCurrency = (amount: number, currency: string) => `${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`
-  private formatDate = (date: Date) => date.toLocaleDateString(this.invoice.invoice.language)
-  private generateHr = (y: number) => this.doc.strokeColor('#aaaaaa').lineWidth(1).moveTo(30, y).lineTo(550, y).stroke()
+  private static readonly formatCurrency = (amount: number, currency: string) => `${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`
+  private readonly formatDate = (date: Date) => date.toLocaleDateString(this.invoice.invoice.language)
+  private readonly generateHr = (y: number) => this.doc.strokeColor('#aaaaaa').lineWidth(1).moveTo(30, y).lineTo(550, y).stroke()
 
   private readonly doc: PDFKit.PDFDocument = new PDFKit({
     margins: {
@@ -18,7 +18,7 @@ export class InvoicePDF {
   private readonly lang
 
   constructor (private invoice: Invoice) {
-    this.lang = translation[this.invoice.invoice.language]
+    this.lang = translation[invoice.invoice.language]
   }
 
   private async generateHeader () {
@@ -77,7 +77,6 @@ export class InvoicePDF {
   }
 
   private async generateInvoiceTable () {
-    let i
     let invoiceTableTop = 270
 
     this.doc.font('Helvetica-Bold')
@@ -93,10 +92,8 @@ export class InvoicePDF {
 
     let position = invoiceTableTop
     let page = 1
-    for (i = 0; i < items.length; i++) {
-      const item = items[i]
+    for (const item of items) {
       position += 25
-
       const itemName = wrap(item.item, { width: 18, indent: '', trim: true })
       const itemDescription = wrap(item.description ?? '', { width: 40, indent: '', trim: true })
 
@@ -106,10 +103,10 @@ export class InvoicePDF {
       const positionEnd = position + (d1 >= d2 ? d1 * 10 : d2 * 10) + 22
 
       if (positionEnd >= 750) {
+        page++
         invoiceTableTop = 50
         this.doc.addPage()
         this.generateHr(70)
-        page++
         this.generateFooter(page)
         position = invoiceTableTop + 25
       }
@@ -127,9 +124,9 @@ export class InvoicePDF {
       this.generateHr(position + 22)
     }
     if (position >= 650) {
+      page++
       invoiceTableTop = 50
       this.doc.addPage()
-      page++
       this.generateFooter(page)
       position = invoiceTableTop
     }

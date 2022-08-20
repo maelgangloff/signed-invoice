@@ -26,7 +26,7 @@ Here is an example of the content of the JWT token payload:
 
 ## Key signing ceremony
 
-Warning: this operation should be performed, if possible, on a newly installed computer disconnected from the internet, with openssl installed.
+⚠️ Warning: this operation should be performed, if possible, on a newly installed computer disconnected from the internet, with openssl installed.
 
 To generate the private key used to sign the QR code's data, execute the following command:
 ```bash
@@ -78,7 +78,8 @@ const invoice = new Invoice({
       unitPrice: 7,
       tax: 0.1,
       description: 'Margherita'
-    }, {
+    },
+    {
       item: 'Soda',
       quantity: 3,
       unitPrice: 2,
@@ -96,7 +97,8 @@ const invoice = new Invoice({
       unitPrice: 8,
       tax: 0.1,
       description: 'Caesar'
-    },{
+    },
+    {
       item: 'Pasta',
       quantity: 4,
       unitPrice: 6,
@@ -113,11 +115,11 @@ const invoice = new Invoice({
   ],
   terms: 'We hope you had a good time and would be happy to welcome you again',
   currency: 'EUR',
-  language: 'en-US',
+  language: 'en-US', // 'en-US' | 'fr-FR' | 'de-DE'
   payment: 'CASH' // 'CASH' | 'CARD' | 'BANK' | 'CHQ' | 'CRYPTO' | string | boolean
 }, privateKey)
 
 invoice.generatePDF().then(doc => doc.pipe(fs.createWriteStream('invoice.pdf')))
 
 ```
-The invoice can be generated in different languages. You are free to contribute to the project by adding the translations to the [translation.json](src/translation.json) file and submitting them via a pull request.
+The invoice can be generated in different languages. You are free to contribute to this project by adding the translations to the [translation.json](src/translation.json) file and submitting them via a pull request.

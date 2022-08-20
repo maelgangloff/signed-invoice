@@ -11,7 +11,7 @@ export interface InvoiceSignedPayload {
     dueDate: number
     /** Total amount of the invoice with taxes */
     amt: number
-    /** Currency corresponding to the amount */
+    /** The ISO 4217 code designating the currency used for invoicing */
     curr: string
     /** Total number of items/services sold */
     qty: number
