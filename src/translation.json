@@ -1,5 +1,5 @@
 {
-    "en_US": {
+    "en-US": {
         "invoice": "Invoice",
         "item": "Item",
         "subtotalWithoutTax": "Subtotal without tax",
@@ -18,7 +18,7 @@
         "paid": "The bill is paid.",
         "page": "Page"
     },
-    "fr_FR": {
+    "fr-FR": {
         "invoice": "Facture",
         "item": "Produit",
         "subtotalWithoutTax": "Total HT",
@@ -37,7 +37,7 @@
         "paid": "La facture est payée.",
         "page": "Page"
     },
-    "de_DE": {
+    "de-DE": {
         "invoice": "Rechnung",
         "item": "Artikel",
         "subtotalWithoutTax": "Nettobetrag",

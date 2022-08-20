@@ -4,20 +4,24 @@ import { Invoice } from './index'
 import translation from './translation.json'
 
 export class InvoicePDF {
-  private formatCurrency = (amount: number, currency: string) => `${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`
-  private doc: PDFKit.PDFDocument = new PDFKit({
+  private static formatCurrency = (amount: number, currency: string) => `${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`
+  private formatDate = (date: Date) => date.toLocaleDateString(this.invoice.invoice.language)
+  private generateHr = (y: number) => this.doc.strokeColor('#aaaaaa').lineWidth(1).moveTo(30, y).lineTo(550, y).stroke()
+
+  private readonly doc: PDFKit.PDFDocument = new PDFKit({
     margins: {
       top: 30, left: 30, right: 30, bottom: 10
     },
     size: 'A4'
   })
 
+  private readonly lang
+
   constructor (private invoice: Invoice) {
-    return this
+    this.lang = translation[this.invoice.invoice.language]
   }
 
   private async generateHeader () {
-    const lang = translation[this.invoice.invoice.language]
     const { seller, logoPath } = this.invoice.invoice
 
     if (logoPath) this.doc.image(logoPath, 10, 40, { width: 80 })
@@ -34,37 +38,25 @@ export class InvoicePDF {
       .image(await this.invoice.createQRCodeBuffer(), 450, 30, { align: 'right', width: 120 })
       .font('Helvetica-Bold')
       .fontSize(8)
-      .text(lang.signedInvoice, 450, 150, { align: 'center' })
+      .text(this.lang.signedInvoice, 450, 150, { align: 'center' })
       .moveDown()
   }
 
-  private generateHr (y: number) {
-    this.doc.strokeColor('#aaaaaa').lineWidth(1).moveTo(30, y).lineTo(550, y).stroke()
-  }
-
-  private formatDate (date: Date) {
-    const day = date.getDate().toString().padStart(2, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const year = date.getFullYear()
-    return day + '/' + month + '/' + year
-  }
-
   private generateCustomerInformation () {
-    const lang = translation[this.invoice.invoice.language]
     const { reference, dueDate, currency, client } = this.invoice.invoice
 
-    this.doc.fillColor('#444444').fontSize(20).text(lang.invoice.toUpperCase(), 30, 160)
+    this.doc.fillColor('#444444').fontSize(20).text(this.lang.invoice.toUpperCase(), 30, 160)
     this.generateHr(185)
     const customerInformationTop = 200
     this.doc.fontSize(10)
-      .text(`${lang.reference}:`, 30, customerInformationTop)
+      .text(`${this.lang.reference}:`, 30, customerInformationTop)
       .font('Helvetica-Bold')
       .text(reference, 130, customerInformationTop)
       .font('Helvetica')
-      .text(`${lang.dueDate}: `, 30, customerInformationTop + 15)
+      .text(`${this.lang.dueDate}: `, 30, customerInformationTop + 15)
       .text(this.formatDate(dueDate), 130, customerInformationTop + 15)
-      .text(`${lang.amountDue}: `, 30, customerInformationTop + 30)
-      .text(this.formatCurrency(this.invoice.amountDue, currency), 130, customerInformationTop + 30)
+      .text(`${this.lang.amountDue}: `, 30, customerInformationTop + 30)
+      .text(InvoicePDF.formatCurrency(this.invoice.amountDue, currency), 130, customerInformationTop + 30)
       .font('Helvetica-Bold')
       .text(client.name, 280, customerInformationTop)
       .font('Helvetica')
@@ -87,12 +79,11 @@ export class InvoicePDF {
   private async generateInvoiceTable () {
     let i
     let invoiceTableTop = 270
-    const lang = translation[this.invoice.invoice.language]
 
     this.doc.font('Helvetica-Bold')
     this.generateTableRow(
       invoiceTableTop,
-      lang.item, lang.description, lang.unitPrice, lang.quantity, lang.total)
+      this.lang.item, this.lang.description, this.lang.unitPrice, this.lang.quantity, this.lang.total)
     this.generateHr(invoiceTableTop + 20)
     this.doc.font('Helvetica')
 
@@ -127,9 +118,9 @@ export class InvoicePDF {
         position,
         itemName,
         itemDescription,
-        this.formatCurrency(item.unitPrice, currency),
+        InvoicePDF.formatCurrency(item.unitPrice, currency),
         item.quantity,
-        this.formatCurrency(item.quantity * item.unitPrice, currency)
+        InvoicePDF.formatCurrency(item.quantity * item.unitPrice, currency)
       )
 
       position += d1 >= d2 ? d1 * 10 : d2 * 10
@@ -144,21 +135,24 @@ export class InvoicePDF {
     }
 
     this.generateHr(position + 21)
-    this.generateTableRow(position + 35, '', '', lang.subtotalWithoutTax, '', this.formatCurrency(subtotalWithoutTax, currency))
-    this.generateTableRow(position + 55, '', '', lang.tax, '', this.formatCurrency(amountDue - subtotalWithoutTax, currency))
+    this.generateTableRow(position + 35, '', '', this.lang.subtotalWithoutTax, '', InvoicePDF.formatCurrency(subtotalWithoutTax, currency))
+    this.generateTableRow(position + 55, '', '', this.lang.tax, '', InvoicePDF.formatCurrency(amountDue - subtotalWithoutTax, currency))
     this.doc.font('Helvetica-Bold')
-    this.generateTableRow(position + 85, '', '', lang.amountDue, '', this.formatCurrency(amountDue, currency))
-    this.doc.font('Helvetica').text(`${this.formatDate(date)}: ${payment === false ? lang.waitingForPayment : lang.paid}`, 30, position + 35).text(terms ?? '', 30, 750)
+    this.generateTableRow(position + 85, '', '', this.lang.amountDue, '', InvoicePDF.formatCurrency(amountDue, currency))
+    this.doc.font('Helvetica').text(`${this.formatDate(date)}: ${payment === false ? this.lang.waitingForPayment : this.lang.paid}`, 30, position + 35).text(terms ?? '', 30, 750)
   }
 
   private generateFooter (page = 1) {
-    const lang = translation[this.invoice.invoice.language]
     const { seller } = this.invoice.invoice
     this.doc.font('Helvetica-Bold').fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 30, 810)
-      .text(`${lang.page} ${page}`, 520, 810).font('Helvetica')
+      .text(`${this.lang.page} ${page}`, 520, 810).font('Helvetica')
   }
 
-  public async generate () {
+  /**
+   * Generate the PDF file corresponding to the invoice
+   * @returns {PDFKit.PDFDocument} A PDFKit document
+   */
+  public async generate (): Promise<PDFKit.PDFDocument> {
     await this.generateHeader()
     this.generateCustomerInformation()
     this.generateFooter()
