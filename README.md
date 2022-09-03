@@ -40,6 +40,10 @@ openssl ec -in privatekey.pem -pubout -out publickey.pem
 
 Keep these keys on a safe backup medium.
 
+## How to check invoices?
+The mobile application [Invoice Verif](https://github.com/maelgangloff/signed-invoice-verif) allows you to verify invoices.  
+It is available for [Android platforms](https://play.google.com/store/apps/details?id=fr.maelgangloff.signed_invoice_verif).
+
 ## Integrate this library into your application
 
 Save your private key in an environment variable and share the public key to the people who will need to authenticate your generated documents.
