@@ -1,1 +1,19 @@
-{}
+{
+    "invoice": "Fatura",
+    "item": "Ürün",
+    "subtotalWithoutTax": "Vergisiz Ara Toplam",
+    "total": "Toplam",
+    "amountDue": "Ödenecek Tutar",
+    "unitPrice": "Birim Fiyat",
+    "tax": "KDV",
+    "quantity": "Miktar",
+    "description": "Açıklama",
+    "reference": "Referans",
+    "invoiceDate": "Fatura Tarihi",
+    "dueDate": "Son Ödeme Tarihi",
+    "terms": "Şartlar",
+    "signedInvoice": "Dijital İmza",
+    "waitingForPayment": "Ödeme Bekleniyor.",
+    "paid": "Fatura Ödendi.",
+    "page": "Sayfa"
+}
