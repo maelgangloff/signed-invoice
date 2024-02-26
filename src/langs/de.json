@@ -1,0 +1,19 @@
+{
+    "invoice": "Rechnung",
+    "item": "Artikel",
+    "subtotalWithoutTax": "Nettobetrag",
+    "total": "Betrag",
+    "amountDue": "Gesamtbetrag",
+    "unitPrice": "Einzelpreis",
+    "tax": "Gesamtsteuer",
+    "quantity": "Menge",
+    "description": "Beschreibung",
+    "reference": "Rechnungsnummer",
+    "invoiceDate": "Rechnungsdatum",
+    "dueDate": "Fälligkeitsdatum",
+    "terms": "Zahlungsbedingungen",
+    "signedInvoice": "digitaler Signaturstempel",
+    "waitingForPayment": "Warten auf Zahlung.",
+    "paid": "Die Rechnung ist bezahlt.",
+    "page": "Seite"
+}

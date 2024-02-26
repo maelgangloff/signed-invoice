@@ -1,0 +1,19 @@
+{
+    "invoice": "Facture",
+    "item": "Produit",
+    "subtotalWithoutTax": "Total HT",
+    "total": "Total",
+    "amountDue": "Total TTC",
+    "unitPrice": "Prix unitaire",
+    "tax": "TVA",
+    "quantity": "Quantité",
+    "description": "Description",
+    "reference": "Référence",
+    "invoiceDate": "Date de facturation",
+    "dueDate": "Date d'échéance",
+    "terms": "Commentaire",
+    "signedInvoice": "cachet de signature numérique",
+    "waitingForPayment": "En attente de paiement.",
+    "paid": "La facture est payée.",
+    "page": "Page"
+}

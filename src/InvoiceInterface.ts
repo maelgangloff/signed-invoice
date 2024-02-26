@@ -1,4 +1,3 @@
-import translation from './translation.json'
 import { Company, Person } from './Entity'
 import { Line } from './Line'
 import { PaymentMethod } from './InvoiceSignedPayload'
@@ -12,7 +11,7 @@ export interface InvoiceInterface {
     dueDate: Date
     lines: Line[]
     currency: string
-    language: keyof typeof translation
+    language: string
     payment: PaymentMethod | boolean,
     terms?: string
   }

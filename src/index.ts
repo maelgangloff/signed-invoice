@@ -3,6 +3,8 @@ import QRCode from 'qrcode'
 import { InvoicePDF } from './InvoicePDF'
 import { InvoiceSignedPayload } from './InvoiceSignedPayload'
 import { InvoiceInterface } from './InvoiceInterface'
+import i18next from 'i18next'
+import filesystemBackend from 'i18next-fs-backend'
 
 export class Invoice {
   public readonly subtotalWithoutTax: number = 0
@@ -72,6 +74,14 @@ export class Invoice {
    * @return {Promise<PDFKit.PDFDocument>}
    */
   public async generatePDF (): Promise<PDFKit.PDFDocument> {
-    return new InvoicePDF(this).generate()
+    await i18next.use(filesystemBackend).init({
+      lng: this.invoice.language,
+      fallbackLng: 'en',
+      backend: {
+        loadPath: __dirname + '/langs/{{lng}}.json',
+        jsonIndent: 2
+      }
+    })
+    return new InvoicePDF(this, i18next).generate()
   }
 }
