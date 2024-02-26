@@ -10,7 +10,7 @@
     "description": "Beschreibung",
     "reference": "Rechnungsnummer",
     "invoiceDate": "Rechnungsdatum",
-    "dueDate": "Fälligkeitsdatum",
+    "dueDate": "Fällig am",
     "terms": "Zahlungsbedingungen",
     "signedInvoice": "digitaler Signaturstempel",
     "waitingForPayment": "Warten auf Zahlung.",
