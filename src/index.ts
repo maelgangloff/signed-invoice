@@ -5,6 +5,7 @@ import { InvoiceSignedPayload } from './InvoiceSignedPayload'
 import { InvoiceInterface } from './InvoiceInterface'
 import i18next from 'i18next'
 import filesystemBackend from 'i18next-fs-backend'
+import path from 'node:path'
 
 export class Invoice {
   public readonly subtotalWithoutTax: number = 0
@@ -78,7 +79,7 @@ export class Invoice {
       lng: this.invoice.language,
       fallbackLng: 'en',
       backend: {
-        loadPath: __dirname + '/langs/{{lng}}.json',
+        loadPath: path.join(__dirname, '/langs/{{lng}}.json'),
         jsonIndent: 2
       }
     })
