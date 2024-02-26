@@ -1,5 +1,6 @@
 import PDFKit from 'pdfkit'
 import wrap from 'word-wrap'
+import path from 'node:path'
 import { Invoice } from './index'
 import { i18n } from 'i18next'
 
@@ -9,17 +10,21 @@ export class InvoicePDF {
   private readonly generateHr = (y: number) => this.doc.strokeColor('#aaaaaa').lineWidth(1).moveTo(30, y).lineTo(550, y).stroke()
   private readonly invoice: Invoice
   private readonly i18n: i18n
-
-  private readonly doc: PDFKit.PDFDocument = new PDFKit({
-    margins: {
-      top: 30, left: 30, right: 30, bottom: 10
-    },
-    size: 'A4'
-  })
+  private readonly doc: PDFKit.PDFDocument
 
   public constructor (invoice: Invoice, i18next: i18n) {
     this.invoice = invoice
     this.i18n = i18next
+
+    this.doc = new PDFKit({
+      margins: {
+        top: 30, left: 30, right: 30, bottom: 10
+      },
+      size: 'A4'
+    })
+    this.doc.registerFont('OpenSans-Bold', path.join(__dirname, '../ttf/OpenSans-Bold.ttf'))
+    this.doc.registerFont('OpenSans-Regular', path.join(__dirname, '../ttf/OpenSans-Regular.ttf'))
+
   }
 
   private async generateHeader () {
@@ -29,7 +34,7 @@ export class InvoicePDF {
 
     const x = logoPath ? 100 : 30
     this.doc.fillColor('#444444')
-      .font('Helvetica')
+      .font('OpenSans-Regular')
       .fontSize(20)
       .text(seller.name, x, 57)
       .fontSize(10)
@@ -37,7 +42,7 @@ export class InvoicePDF {
       .text(`${seller.address.zip} ${seller.address.city} ${seller.address.state ?? ''}`, x, 95)
       .text(`${seller.contact}`, x, 110)
       .image(await this.invoice.createQRCodeBuffer(), 450, 30, { align: 'right', width: 120 })
-      .font('Helvetica-Bold')
+      .font('OpenSans-Bold')
       .fontSize(8)
       .text(this.i18n.t('signedInvoice'), 450, 150, { align: 'center' })
       .moveDown()
@@ -51,16 +56,16 @@ export class InvoicePDF {
     const customerInformationTop = 200
     this.doc.fontSize(10)
       .text(`${this.i18n.t('reference')}:`, 30, customerInformationTop)
-      .font('Helvetica-Bold')
+      .font('OpenSans-Bold')
       .text(reference, 130, customerInformationTop)
-      .font('Helvetica')
+      .font('OpenSans-Regular')
       .text(`${this.i18n.t('dueDate')}: `, 30, customerInformationTop + 15)
       .text(this.formatDate(dueDate), 130, customerInformationTop + 15)
       .text(`${this.i18n.t('amountDue')}: `, 30, customerInformationTop + 30)
       .text(InvoicePDF.formatCurrency(this.invoice.amountDue, currency), 130, customerInformationTop + 30)
-      .font('Helvetica-Bold')
+      .font('OpenSans-Bold')
       .text(client.name, 280, customerInformationTop)
-      .font('Helvetica')
+      .font('OpenSans-Regular')
       .text(client.address ? client.address.street : '', 280, customerInformationTop + 15)
       .text(client.address ? `${client.address.zip} ${client.address.city}` : '', 280, customerInformationTop + 30)
       .moveDown()
@@ -80,12 +85,12 @@ export class InvoicePDF {
   private generateInvoiceTable () {
     let invoiceTableTop = 270
 
-    this.doc.font('Helvetica-Bold')
+    this.doc.font('OpenSans-Bold')
     this.generateTableRow(
       invoiceTableTop,
       this.i18n.t('item'), this.i18n.t('description'), this.i18n.t('unitPrice'), this.i18n.t('quantity'), this.i18n.t('total'))
     this.generateHr(invoiceTableTop + 20)
-    this.doc.font('Helvetica')
+    this.doc.font('OpenSans-Regular')
 
     const items = this.invoice.invoice.lines
     const { currency, terms, payment, date } = this.invoice.invoice
@@ -135,15 +140,15 @@ export class InvoicePDF {
     this.generateHr(position + 21)
     this.generateTableRow(position + 35, '', '', this.i18n.t('subtotalWithoutTax'), '', InvoicePDF.formatCurrency(subtotalWithoutTax, currency))
     this.generateTableRow(position + 55, '', '', this.i18n.t('tax'), '', InvoicePDF.formatCurrency(amountDue - subtotalWithoutTax, currency))
-    this.doc.font('Helvetica-Bold')
+    this.doc.font('OpenSans-Bold')
     this.generateTableRow(position + 85, '', '', this.i18n.t('amountDue'), '', InvoicePDF.formatCurrency(amountDue, currency))
-    this.doc.font('Helvetica').text(`${this.formatDate(date)}: ${payment === false ? this.i18n.t('waitingForPayment') : this.i18n.t('paid')}`, 30, position + 35).text(terms ?? '', 30, 750)
+    this.doc.font('OpenSans-Regular').text(`${this.formatDate(date)}: ${payment === false ? this.i18n.t('waitingForPayment') : this.i18n.t('paid')}`, 30, position + 35).text(terms ?? '', 30, 750)
   }
 
   private generateFooter (page = 1) {
     const { seller } = this.invoice.invoice
-    this.doc.font('Helvetica-Bold').fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 30, 810)
-      .text(`${this.i18n.t('page')} ${page}`, 520, 810).font('Helvetica')
+    this.doc.font('OpenSans-Bold').fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 30, 810)
+      .text(`${this.i18n.t('page')} ${page}`, 520, 810).font('OpenSans-Regular')
   }
 
   /**

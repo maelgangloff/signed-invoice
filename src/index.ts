@@ -79,7 +79,7 @@ export class Invoice {
       lng: this.invoice.language,
       fallbackLng: 'en',
       backend: {
-        loadPath: path.join(__dirname, '/langs/{{lng}}.json'),
+        loadPath: path.join(__dirname, '../langs/{{lng}}.json'),
         jsonIndent: 2
       }
     })
