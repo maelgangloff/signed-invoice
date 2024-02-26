@@ -10,7 +10,7 @@
     "description": "Descripción",
     "reference": "Referencia",
     "invoiceDate": "Fecha de factura",
-    "dueDate": "Fecha de vencimiento",
+    "dueDate": "Fecha límite",
     "terms": "Condiciones",
     "signedInvoice": "sello de firma digital",
     "waitingForPayment": "En espera de pago.",
