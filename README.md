@@ -119,11 +119,11 @@ const invoice = new Invoice({
   ],
   terms: 'We hope you had a good time and would be happy to welcome you again',
   currency: 'EUR',
-  language: 'en-US', // 'en-US' | 'fr-FR' | 'de-DE'
+  language: 'en', // 'en' | 'fr' | 'de'
   payment: 'CASH' // 'CASH' | 'CARD' | 'BANK' | 'CHQ' | 'CRYPTO' | string | boolean
 }, privateKey)
 
 invoice.generatePDF().then(doc => doc.pipe(fs.createWriteStream('invoice.pdf')))
 
 ```
-The invoice can be generated in different languages. You are free to contribute to this project by adding the translations to the [translation.json](src/translation.json) file and submitting them via a pull request.
+The invoice can be generated in different languages.
