@@ -1,7 +1,7 @@
 {
     "invoice": "Fatura",
     "item": "Ürün",
-    "subtotalWithoutTax": "Vergisiz Ara Toplam",
+    "subtotalWithoutTax": "Vergi hariç toplam",
     "total": "Toplam",
     "amountDue": "Ödenecek Tutar",
     "unitPrice": "Birim Fiyat",
