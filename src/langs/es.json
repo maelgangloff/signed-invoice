@@ -1,1 +1,19 @@
-{}
+{
+    "invoice": "Factura",
+    "item": "Producto",
+    "total": "Importe total",
+    "amountDue": "Total con IVA",
+    "subtotalWithoutTax": "Total sin IVA",
+    "unitPrice": "Precio unitario",
+    "tax": "IVA",
+    "quantity": "Cantidad",
+    "description": "Descripción",
+    "reference": "Referencia",
+    "invoiceDate": "Fecha de factura",
+    "dueDate": "Fecha de vencimiento",
+    "terms": "Condiciones",
+    "signedInvoice": "sello de firma digital",
+    "waitingForPayment": "En espera de pago.",
+    "paid": "La factura está pagada.",
+    "page": "Página"
+}
