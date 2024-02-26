@@ -24,7 +24,6 @@ export class InvoicePDF {
     })
     this.doc.registerFont('OpenSans-Bold', path.join(__dirname, '../ttf/OpenSans-Bold.ttf'))
     this.doc.registerFont('OpenSans-Regular', path.join(__dirname, '../ttf/OpenSans-Regular.ttf'))
-
   }
 
   private async generateHeader () {
