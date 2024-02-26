@@ -1,7 +1,7 @@
 {
   "name": "signed-invoice",
   "version": "0.2.0",
-  "description": "Create cryptographically signed invoices with a qrcode",
+  "description": "Create cryptographically signed invoices with a QRCode",
   "types": "types/index.d.ts",
   "author": {
     "name": "Maël Gangloff",

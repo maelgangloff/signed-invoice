@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: Signed Invoice
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Maël
+    family-names: Gangloff
+    email: contact@maelgangloff.fr
+    orcid: 'https://orcid.org/0000-0002-7729-724X'
+identifiers:
+  - type: url
+    value: >-
+      https://github.com/maelgangloff/signed-invoice/releases/tag/0.2.0
+    description: Release v0.2.0 of signed-invoice
+repository-code: 'https://github.com/maelgangloff/signed-invoice'
+abstract: Create cryptographically signed invoices with a QRCode
+keywords:
+  - Invoice
+  - Bill
+  - Generator
+  - PDF
+  - Crypto
+license: GPL-3.0-or-later
+version: 0.2.0
+date-released: '2024-02-26'
+license-url: 'https://github.com/maelgangloff/signed-invoice/blob/master/LICENSE'
