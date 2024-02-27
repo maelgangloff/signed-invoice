@@ -1,1 +1,19 @@
-{}
+{
+    "invoice": "Счет",
+    "subtotalWithoutTax": "Итог без налога",
+    "total": "Итого",
+    "amountDue": "Сумма к оплате",
+    "unitPrice": "Цена за единицу",
+    "tax": "Налог",
+    "quantity": "Количество",
+    "description": "Описание",
+    "reference": "Ссылка",
+    "invoiceDate": "Дата выставления счета",
+    "dueDate": "Срок оплаты",
+    "terms": "Условия",
+    "signedInvoice": "Подписанный счет",
+    "waitingForPayment": "Ожидание оплаты.",
+    "paid": "Счет оплачен.",
+    "page": "Страница",
+    "item": "Товар"
+}
