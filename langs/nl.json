@@ -1,1 +1,19 @@
-{}
+{
+    "amountDue": "Totale prijs",
+    "total": "Totaal",
+    "description": "Beschrijving",
+    "item": "Product",
+    "invoice": "Factuur",
+    "subtotalWithoutTax": "Totaal HT",
+    "quantity": "hoeveelheid",
+    "tax": "VAT",
+    "unitPrice": "Eenheid prijs",
+    "reference": "Referentie",
+    "signedInvoice": "digitale handtekeningstempel",
+    "dueDate": "Deadline",
+    "paid": "De rekening wordt betaald.",
+    "waitingForPayment": "Wachten op betaling.",
+    "terms": "Opmerking",
+    "page": "Bladzijde",
+    "invoiceDate": "Factuurdatum"
+}
