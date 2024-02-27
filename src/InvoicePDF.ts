@@ -147,7 +147,7 @@ export class InvoicePDF {
   private generateFooter (page = 1) {
     const { seller } = this.invoice.invoice
     this.doc.font('OpenSans-Bold').fontSize(10).text(`${seller.name} - ${seller.identifier}${seller.vatNumber ? ' - ' + seller.vatNumber : ''}`, 30, 810)
-      .text(`${this.i18n.t('page')} ${page}`, 520, 810).font('OpenSans-Regular')
+      .text(`${this.i18n.t('page')} ${page}`, 500, 810).font('OpenSans-Regular')
   }
 
   /**
